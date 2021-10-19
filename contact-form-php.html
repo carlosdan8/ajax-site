@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envío de formularios con Fetch y FormSubmit</title>
+    <title>Envío de formularios con Fetch y PHP</title>
 </head>
 <style>
 
@@ -105,7 +105,7 @@ html {
 }
 </style>
 <body>
-    <form class="contact-form" >
+    <form class="contact-form">
         <legend>Envíanos tus comentarios</legend>
         <input type="text" name="name" placeholder="Escribe tu nombre"
             title="Nombre sólo acepta letras y espacios en blanco" pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required>
@@ -168,7 +168,7 @@ html {
                     console.log($response);
                     $loader.classList.remove("none");
 
-                    fetch("https://formsubmit.co/ajax/icarlosdan8@gmail.com",{
+                    fetch("assets/send_mail.php",{
                         method:"POST",
                         body:new FormData(e.target)
                     })
