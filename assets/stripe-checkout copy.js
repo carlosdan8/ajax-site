@@ -56,14 +56,14 @@ Promise.all([
 d.addEventListener("click", (e) => {
 	// console.log(e.target);
 	if (e.target.matches(".taco *")) {
-		let price = e.target.parentElement.getAttribute("data-price");
+		let priceId = e.target.parentElement.getAttribute("data-price");
 		// console.info(priceId);
 		Stripe(STRIPE_KEYS.public)
-			.redirectToCheckout({
+			.redirecToCheckout({
 				lineItems: [{ price, quantity: 1 }],
 				mode: "subscription",
-				successUrl: "http://127.0.0.1:5500/assets/stripe-success.html",
-				cancelUrl: "http://127.0.0.1:5500/assets/stripe-cancel.html",
+				successUrl: "",
+				cancelURL: "",
 			})
 			.then((res) => {
 				if (res.error) {
