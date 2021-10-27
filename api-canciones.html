@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de canciones</title>
+    <style>
+
+        html{
+            font-family: sans-serif;
+        }
+
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+        main{
+            display:flex;
+            flex-direction: column-reverse;
+            
+        }
+        article{
+            padding:1rem;
+        }
+
+        .loader{
+            display: none;
+            margin: auto;
+        }
+
+        .song blockquote{
+            white-space: pre-wrap;
+        }
+
+        @media screen and (min-width:800px ){
+            main{
+                padding: 1rem;
+                flex-direction:row;
+            }
+
+            main > *{
+                padding: 1rem;
+                flex-basis: 50%;
+            }
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Buscador de Canciones</h1>
+    <form id="song-search">
+        <input type="text" name="artist" placeholder="Nombre del Intérprete" required>
+        <input type="text" name="song" placeholder="Nombre de la canción" required>
+        <input type="submit">
+    </form>
+    <img src="./assets/hearts.svg" alt="Cargando" class="loader">
+    <aside class="error"></aside>
+    <main>
+        <article class="artist">
+            
+        </article>
+        <article class="song">
+            
+        </article>
+        
+    </main>
+    <script>
+        const d= document,
+        $form=d.getElementById("song-search"),
+        $loader=d.querySelector(".loader"),
+        $error=d.querySelector(".error"),
+        $main=d.querySelector(".main"),
+        $artist=d.querySelector(".artist"),
+        $song=d.querySelector(".song");
+
+        $form.addEventListener("submit", async e=>{
+            e.preventDefault();
+        
+            try{
+                $loader.style.display="block"
+
+                let artist=e.target.artist.value,
+                song=e.target.song.value,
+                $artistTemplate="",
+                $songTemplate="",
+                artistAPI=`https://theaudiodb.com/api/v1/json/1/search.php?s=${artist}`,
+                songAPI=`https://api.lyrics.ovh/v1/${artist}/${song}`,
+                artistFetch=fetch(artistAPI),
+                songFetch=fetch(songAPI),
+                [artistRes,songRes]=await Promise.all([artistFetch, songFetch]),
+                artistData= await artistRes.json(),
+                songData=await songRes.json()
+
+                //console.info(songData)
+                
+                if(artistData.artist===null){
+                    $artistTemplate=`<h2>No existe el interprete <mark>${artist}</mark></h2>`
+                }else{
+                    let artist=artistData.artists[0]
+                    $artistTemplate=`
+                        <h2>${artist.strArtist}</h2>
+                        <img src="${artist.strArtistThumb}" alt="${artist.strArtist}">
+                        <p>
+                            ${(artist.intBornYear||"Sin datos")} - ${(artist.intDiedYear||"Presente")}
+                        </p>
+                        <p>${artist.strCountry}</p>
+                        <p>${artist.strGenre}</p>
+                        <a href="${artist.strWebsite}" target="_blank">Sitio Web</a>
+                        <p>${artist.strBiographyEN}<p>
+                    `;
+                }
+                $artist.innerHTML=$artistTemplate
+
+                if(!songData.lyrics){
+                    $songTemplate=`<h2>No existe la letra de la canción <mark>${song}</mark></h2>`
+                }else{
+                    $songTemplate=`
+                        <h2>${capitalize(song)}</h2>
+                        <blockquote>${songData.lyrics}</blockquote>
+                    `
+                }
+                $song.innerHTML=$songTemplate
+
+            }catch(err){
+                console.error(err)
+                
+                let message=err.statusText||"Ocurrió un error."
+                $error.innerHTML=`<p>Error ${err.status}: ${message}</p>`
+                $loader.style.display="none";
+            }finally{
+                $loader.style.display="none"
+            }
+        })
+
+        function capitalize(word) {
+            return word[0].toUpperCase() + word.substring(1).toLowerCase();
+        }
+    </script>
+</body>
+</html>
