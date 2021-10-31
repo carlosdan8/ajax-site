@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordPress REST API</title>
+    <style>
+        .loader{
+            display:none;
+            margin: 2rem auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>WordPress REST API</h1>
+    <article id="site" class="site"></article>
+    <section id="posts" class="posts"></section>
+    <img src="assets/hearts.svg" alt="Cargando..." class="loader">
+    <template id="post-template">
+        <article class="post">
+            <img src="" alt="" class="post-image">
+            <aside>
+                <h2 class="post-title"></h2>
+                <figure class="post-author"></figure>
+                <small class="post-date"></small>
+                <a href="" class="post-link" target="_blank">Ver Publicación original</a>
+                <p class="post-excerpt"></p>
+                <div class="post-categories"></div>
+                <div class="post-tags"></div>
+                <details class="post-content"></details>
+                <summary>Ver contenido de la publicación</summary>
+                <article></article>
+            </aside>
+        </article>
+        <hr>
+    </template>
+    <script>
+        const d= document,
+        $site=d.getElementById("site"),
+        $posts=d.getElementById("posts"),
+        $loader=d.querySelector(".loader"),
+        $template=d.getElementById("post-template").content,
+        $fragment=d.createDocumentFragment(),
+        DOMAIN="https://css-tricks.com",
+        SITE=`${DOMAIN}/wp-json`,
+        API_WP=`${SITE}/wp/v2`,
+        POSTS=`${API_WP}/posts?_embed`,
+        PAGES=`${API_WP}/pages`
+        CATEGORIES=`${API_WP}/categories`
+
+        function getSiteData(){
+            fetch(SITE)
+            .then(res=>res.ok?res.json():Promise.reject(res))
+            .then(json=>{
+                console.log(json)
+                $site.innerHTML=`
+                    <h3>Sitio Web</h3>
+                    <h2>
+                        <a href="${json.url}" target="_blank" alt="${json.name}">${json.name}</a>
+                    </h2>
+                    <p>${json.description}</p>
+                    <p>${json.timezone_string}</p>
+                `
+            })
+            .catch(err=>{
+                console.error(err)
+                let message=err.statusText||"Ocurrió un error"
+                $site.innerHTML=`
+                    <p>Error ${err.status}: ${message} </p>
+                `
+            })
+        }
+
+        function getPosts(){
+            $loader.style.display="block"
+            fetch(POSTS)
+            .then(res=>res.ok?res.json():Promise.reject(res))
+            .then(json=>{
+                console.log(json)
+                json.forEach(el=>{
+                    $template.querySelector(".post-image").src=el._embedded["wp:featuredmedia"][0].source_url
+                    $template.querySelector(".post-image").alt=el.title.rendered
+                    $template.querySelector(".post-title").innerHTML=el.title.rendered
+                    let $clone=d.importNode($template,true)
+                    $fragment.appendChild($clone)
+                })
+                
+                $posts.appendChild($fragment)
+                $loader.style.display="none"
+            })
+            .catch(err=>{
+                console.error(err)
+                let message=err.statusText||"Ocurrió un error"
+                $posts.innerHTML=`
+                    <p>Error ${err.status}: ${message} </p>
+                    
+                `
+                $loader.style.display="none"
+            })
+            .finally(
+                
+            )
+        }
+
+        d.addEventListener("DOMContentLoaded",e=>{
+            getSiteData()
+            getPosts()
+        })
+    </script>
+</body>
+</html>
