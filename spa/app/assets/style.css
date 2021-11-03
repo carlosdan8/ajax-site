@@ -1,0 +1,25 @@
+html {
+	box-sizing: border-box;
+	font-family: sans-serif;
+	font-size: 16px;
+}
+
+*,
+*:after,
+*:before {
+	box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	overflow-x: hidden;
+}
+
+a {
+	color: #01579b;
+	transition: color 0.3s ease;
+}
+
+a:hover {
+	color: #00b0ff;
+}
