@@ -2,33 +2,34 @@ import api from "../helpers/wp_api.js";
 import { ajax } from "../helpers/ajax.js";
 import { PostCard } from "./PostCard.js";
 
-export function Router() {
+export async function Router() {
 	const d = document,
 		w = window,
-		$posts = d.getElementById("posts");
+		$main = d.getElementById("main");
 
 	let { hash } = location;
 
 	// console.log(hash);
-	$posts.innerHTML = null;
+	$main.innerHTML = null;
 
 	if (!hash || hash === "#/") {
-		ajax({
+		await ajax({
 			url: api.POSTS,
 			cbSuccess: (posts) => {
 				console.log(posts);
 				let html = "";
 				posts.forEach((post) => (html += PostCard(post)));
-				d.querySelector(".loader").style.display = "none";
-				$posts.innerHTML = html;
+				// d.querySelector(".loader").style.display = "none";
+				$main.innerHTML = html;
 			},
 		});
 	} else if (hash === "#/search") {
-		$posts.innerHTML = "<h2>Sección del Buscador</h2>";
+		$main.innerHTML = "<h2>Sección del Buscador</h2>";
 	} else if (hash === "#/contacto") {
-		$posts.innerHTML = "<h2>Sección del Contacto</h2>";
+		$main.innerHTML = "<h2>Sección del Contacto</h2>";
 	} else {
-		$posts.innerHTML =
+		$main.innerHTML =
 			"<h2>Aquí cargará el contenido del post previamente seleccionado</h2>";
 	}
+	d.querySelector(".loader").style.display = "none";
 }
