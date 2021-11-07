@@ -1,6 +1,7 @@
 import api from "../helpers/wp_api.js";
 import { ajax } from "../helpers/ajax.js";
 import { PostCard } from "./PostCard.js";
+import { Post } from "./Post.js";
 
 export async function Router() {
 	const d = document,
@@ -16,7 +17,7 @@ export async function Router() {
 		await ajax({
 			url: api.POSTS,
 			cbSuccess: (posts) => {
-				console.log(posts);
+				//console.log(posts);
 				let html = "";
 				posts.forEach((post) => (html += PostCard(post)));
 				// d.querySelector(".loader").style.display = "none";
@@ -30,6 +31,17 @@ export async function Router() {
 	} else {
 		$main.innerHTML =
 			"<h2>Aquí cargará el contenido del post previamente seleccionado</h2>";
+		//console.log(`${api.POST}/${localStorage.getItem("wpPostId")}`);
+		await ajax({
+			url: `${api.POST}/${localStorage.getItem("wpPostId")}`,
+			cbSuccess: (post) => {
+				console.log(post);
+				$main.innerHTML = Post(post);
+				// let html = "";
+				// posts.forEach((post) => (html += PostCard(post)));
+				// $main.innerHTML = html;
+			},
+		});
 	}
 	d.querySelector(".loader").style.display = "none";
 }
