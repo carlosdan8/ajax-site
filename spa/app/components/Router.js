@@ -34,7 +34,7 @@ export async function Router() {
 		await ajax({
 			url: `${api.SEARCH}${query}`,
 			cbSuccess: (search) => {
-				console.log(search);
+				//console.log(search);
 				let html = "";
 				if (search.length === 0) {
 					html = `
