@@ -42,6 +42,14 @@ img {
 	background-color: #dc3545;
 }
 
+.error mark {
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	display: inline-block;
+	color: #fff;
+	background-color: #01579b;
+}
+
 .form-search {
 	margin: auto;
 	text-align: center;
@@ -82,7 +90,7 @@ img {
 }
 
 .post-card {
-	margin: 1 rem auto;
+	margin: 1rem auto;
 	padding: 1rem;
 	width: 80%;
 	background-color: #eceff1;

@@ -6,12 +6,12 @@ export function PostCard(props) {
 			: "app/assets/favicon.ico";
 
 	document.addEventListener("click", (e) => {
-		if (e.target.matches(".post-card a")) return false;
+		if (!e.target.matches(".post-card a")) return false;
 		localStorage.setItem("wpPostId", e.target.dataset.id);
 	});
 
 	return `
-        <article className="post-card">
+        <article class="post-card">
             <img src="${urlPoster}" alt="${title.rendered}" />
             <h2>${title.rendered}</h2>
             <p>
