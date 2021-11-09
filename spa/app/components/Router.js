@@ -3,6 +3,7 @@ import { ajax } from "../helpers/ajax.js";
 import { PostCard } from "./PostCard.js";
 import { Post } from "./Post.js";
 import { SearchCard } from "./SearchCard.js";
+import { ContactForm } from "./ContactForm.js";
 
 export async function Router() {
 	const d = document,
@@ -52,7 +53,7 @@ export async function Router() {
 			},
 		});
 	} else if (hash === "#/contacto") {
-		$main.innerHTML = "<h2>Sección del Contacto</h2>";
+		$main.appendChild(ContactForm());
 	} else {
 		$main.innerHTML =
 			"<h2>Aquí cargará el contenido del post previamente seleccionado</h2>";
